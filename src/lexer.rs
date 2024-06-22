@@ -92,7 +92,7 @@ impl Iterator for Lexer {
 mod test {
     use crate::lexer::Operator;
 
-    use super::{Lexer, Token};
+    use super::{Lexer, Paren, Token};
 
     #[test]
     fn single_number() {
@@ -120,6 +120,83 @@ mod test {
             Token::IntegerNum(2),
             Token::Operator(Operator::Add),
             Token::IntegerNum(2),
+        ];
+        let actual = lexer.collect::<Vec<Token>>();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn subtraction() {
+        let data = "2-2";
+        let lexer = Lexer::new(data);
+        let expected = vec![
+            Token::IntegerNum(2),
+            Token::Operator(Operator::Subtract),
+            Token::IntegerNum(2),
+        ];
+        let actual = lexer.collect::<Vec<Token>>();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn division() {
+        let data = "2/2";
+        let lexer = Lexer::new(data);
+        let expected = vec![
+            Token::IntegerNum(2),
+            Token::Operator(Operator::Divide),
+            Token::IntegerNum(2),
+        ];
+        let actual = lexer.collect::<Vec<Token>>();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn multiplication() {
+        let data = "2*2";
+        let lexer = Lexer::new(data);
+        let expected = vec![
+            Token::IntegerNum(2),
+            Token::Operator(Operator::Multiply),
+            Token::IntegerNum(2),
+        ];
+        let actual = lexer.collect::<Vec<Token>>();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn addition_with_paren() {
+        let data = "(2+2)";
+        let lexer = Lexer::new(data);
+        let expected = vec![
+            Token::Paren(Paren::Opening),
+            Token::IntegerNum(2),
+            Token::Operator(Operator::Add),
+            Token::IntegerNum(2),
+            Token::Paren(Paren::Closing),
+        ];
+        let actual = lexer.collect::<Vec<Token>>();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn mix_of_operations() {
+        let data = "(2+2)-1*(3- 2)";
+        let lexer = Lexer::new(data);
+        let expected = vec![
+            Token::Paren(Paren::Opening),
+            Token::IntegerNum(2),
+            Token::Operator(Operator::Add),
+            Token::IntegerNum(2),
+            Token::Paren(Paren::Closing),
+            Token::Operator(Operator::Subtract),
+            Token::IntegerNum(1),
+            Token::Operator(Operator::Multiply),
+            Token::Paren(Paren::Opening),
+            Token::IntegerNum(3),
+            Token::Operator(Operator::Subtract),
+            Token::IntegerNum(2),
+            Token::Paren(Paren::Closing),
         ];
         let actual = lexer.collect::<Vec<Token>>();
         assert_eq!(expected, actual);
