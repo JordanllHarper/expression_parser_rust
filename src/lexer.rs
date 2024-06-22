@@ -181,7 +181,7 @@ mod test {
 
     #[test]
     fn mix_of_operations() {
-        let data = "(2+2)-1*(3- 2)";
+        let data = "(2 + 2)- 1*(3- 2)";
         let lexer = Lexer::new(data);
         let expected = vec![
             Token::Paren(Paren::Opening),
